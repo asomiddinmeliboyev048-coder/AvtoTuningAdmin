@@ -1,0 +1,153 @@
+.dashboard__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.dashboard__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.chart-card {
+  padding: 22px;
+}
+.chart-card--wide {
+  grid-column: span 2;
+}
+
+.chart-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.chart-card__head h3 {
+  font-size: 1.1rem;
+}
+.chart-card__sub {
+  font-size: 0.82rem;
+  color: var(--text-faint);
+}
+
+/* Custom tooltip */
+.chart-tip {
+  background: var(--bg-elev);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+.chart-tip__label {
+  font-weight: 600;
+  font-size: 0.82rem;
+  margin-bottom: 6px;
+}
+.chart-tip__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+.chart-tip__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.chart-tip__name {
+  color: var(--text-dim);
+}
+.chart-tip__val {
+  margin-left: auto;
+  font-weight: 700;
+}
+
+/* Legend */
+.chart-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+.chart-legend__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+}
+.chart-legend__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+.chart-legend__name {
+  color: var(--text-dim);
+}
+.chart-legend__val {
+  margin-left: auto;
+  font-weight: 700;
+}
+
+/* Activity */
+.activity {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.activity__item {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.activity__item:last-child {
+  border-bottom: none;
+}
+.activity__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.activity__dot--order { background: var(--c-blue); }
+.activity__dot--stock { background: var(--c-amber); }
+.activity__dot--payment { background: var(--c-green); }
+.activity__dot--customer { background: var(--c-purple); }
+.activity__dot--cancel { background: var(--brand); }
+.activity__body {
+  display: flex;
+  flex-direction: column;
+}
+.activity__text {
+  font-size: 0.9rem;
+}
+.activity__time {
+  font-size: 0.76rem;
+  color: var(--text-faint);
+}
+
+@media (max-width: 1200px) {
+  .dashboard__kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .dashboard__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .chart-card--wide {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 720px) {
+  .dashboard__kpis,
+  .dashboard__grid {
+    grid-template-columns: 1fr;
+  }
+  .chart-card--wide {
+    grid-column: span 1;
+  }
+}
