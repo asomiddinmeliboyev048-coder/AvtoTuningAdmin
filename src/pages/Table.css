@@ -220,3 +220,44 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* --- Firestore moderatsiya qo'shimchalari --- */
+.table-select {
+  background: var(--bg, #0b0d12);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  border-radius: 9px;
+  color: var(--text, #fff);
+  padding: 7px 10px;
+  font-family: inherit;
+  font-size: 0.84rem;
+  outline: none;
+  cursor: pointer;
+}
+.table-select:focus { border-color: #ff3d3d; }
+
+.vmod__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+.vmod__card { padding: 0; overflow: hidden; }
+.vmod__thumb {
+  position: relative; height: 150px;
+  background: #1a1e26 center/cover no-repeat; background-size: cover;
+}
+.vmod__thumb .badge { position: absolute; top: 8px; left: 8px; }
+.vmod__body { padding: 14px; }
+.vmod__title { font-weight: 600; font-size: 0.92rem; margin-bottom: 4px; }
+.vmod__author { color: var(--text-faint, #8a90a0); font-size: 0.8rem; margin-bottom: 12px; }
+.vmod__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.vmod__btn { padding: 8px 12px !important; font-size: 0.8rem !important; }
+.vmod__btn--del { color: #ff6b6b; }
+
+.rmod__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.rmod__card { display: flex; flex-direction: column; gap: 12px; }
+.rmod__top { display: flex; align-items: center; gap: 12px; }
+.rmod__av { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(120deg, #ff3d3d, #ff8a3d) center/cover; display: grid; place-items: center; color: #fff; font-weight: 700; flex-shrink: 0; }
+.rmod__stars { display: inline-flex; gap: 2px; margin-top: 3px; }
+.rmod__text { color: var(--text-faint, #8a90a0); font-size: 0.9rem; line-height: 1.5; font-style: italic; }
+.rmod__actions { display: flex; gap: 8px; flex-wrap: wrap; }

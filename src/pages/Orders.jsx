@@ -1,121 +1,77 @@
-import { useMemo, useState } from "react";
-import { Search, Filter, Plus, MoreHorizontal } from "lucide-react";
-import { ORDERS, statusToBadge } from "../data/mock.js";
+// Buyurtmalar — saytdagi savatdan keladi (Firestore 'orders').
+import { useEffect, useState } from "react";
+import { collection, getDocs, updateDoc, doc, query, orderBy } from "firebase/firestore";
+import { RefreshCw } from "lucide-react";
+import { db } from "../lib/firebase.js";
 import "./Table.css";
 
-const STATUSES = [
-  "Barchasi",
-  "Kutilmoqda",
-  "Bajarilmoqda",
-  "Yakunlandi",
-  "Bekor qilindi",
+const STATUS = [
+  { v: "new", label: "Yangi", b: "badge--blue" },
+  { v: "processing", label: "Bajarilmoqda", b: "badge--amber" },
+  { v: "done", label: "Yakunlandi", b: "badge--green" },
+  { v: "cancelled", label: "Bekor qilindi", b: "badge--red" },
 ];
+const label = (v) => STATUS.find((s) => s.v === v)?.label || v;
+const badge = (v) => STATUS.find((s) => s.v === v)?.b || "badge--blue";
 
 export default function Orders() {
-  const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("Barchasi");
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const rows = useMemo(() => {
-    return ORDERS.filter((o) => {
-      const matchQuery =
-        o.id.toLowerCase().includes(query.toLowerCase()) ||
-        o.customer.toLowerCase().includes(query.toLowerCase()) ||
-        o.car.toLowerCase().includes(query.toLowerCase());
-      const matchStatus = status === "Barchasi" || o.status === status;
-      return matchQuery && matchStatus;
-    });
-  }, [query, status]);
+  const load = async () => {
+    setLoading(true);
+    try {
+      const snap = await getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc")));
+      setRows(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    } catch {
+      const snap = await getDocs(collection(db, "orders"));
+      setRows(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    }
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
 
-  const total = rows.reduce((sum, o) => sum + o.amount, 0);
+  const change = async (id, v) => {
+    await updateDoc(doc(db, "orders", id), { status: v });
+    setRows((r) => r.map((x) => (x.id === id ? { ...x, status: v } : x)));
+  };
+
+  const total = rows.reduce((s, o) => s + (o.total || 0), 0);
 
   return (
     <div className="fade-up">
       <div className="page-head">
-        <div>
-          <h1>Buyurtmalar</h1>
-          <p>Barcha buyurtmalarni boshqaring va holatini kuzating.</p>
-        </div>
-        <button className="btn btn-primary">
-          <Plus size={16} /> Yangi buyurtma
-        </button>
+        <div><h1>Buyurtmalar</h1><p>Dokon savatidan kelgan buyurtmalar.</p></div>
+        <button className="btn btn-ghost" onClick={load}><RefreshCw size={15} /> Yangilash</button>
       </div>
 
       <div className="card table-card">
-        <div className="table-toolbar">
-          <div className="table-search">
-            <Search size={17} />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="ID, mijoz yoki avtomobil bo'yicha qidirish…"
-            />
-          </div>
-          <div className="table-filters">
-            {STATUSES.map((s) => (
-              <button
-                key={s}
-                className={`pill ${status === s ? "pill--active" : ""}`}
-                onClick={() => setStatus(s)}
-              >
-                {s}
-              </button>
-            ))}
-            <button className="btn btn-ghost table-filter-btn">
-              <Filter size={15} /> Filtr
-            </button>
-          </div>
-        </div>
-
         <div className="table-scroll">
           <table className="table">
             <thead>
-              <tr>
-                <th>Buyurtma ID</th>
-                <th>Mijoz</th>
-                <th>Avtomobil</th>
-                <th>Xizmat</th>
-                <th>Summa</th>
-                <th>Holat</th>
-                <th>Sana</th>
-                <th></th>
-              </tr>
+              <tr><th>Mijoz</th><th>Telefon</th><th>Mahsulotlar</th><th>Summa</th><th>Holat</th><th>Boshqarish</th></tr>
             </thead>
             <tbody>
               {rows.map((o) => (
                 <tr key={o.id}>
-                  <td className="table-mono">{o.id}</td>
-                  <td className="table-strong">{o.customer}</td>
-                  <td>{o.car}</td>
-                  <td className="table-dim">{o.service}</td>
-                  <td className="table-strong">${o.amount.toLocaleString()}</td>
+                  <td className="table-strong">{o.name || "—"}</td>
+                  <td className="table-mono">{o.phone || "—"}</td>
+                  <td className="table-dim">{(o.items || []).map((i) => `${i.name}×${i.qty}`).join(", ")}</td>
+                  <td className="table-strong">${(o.total || 0).toLocaleString()}</td>
+                  <td><span className={`badge ${badge(o.status)}`}>{label(o.status)}</span></td>
                   <td>
-                    <span className={`badge ${statusToBadge(o.status)}`}>
-                      {o.status}
-                    </span>
-                  </td>
-                  <td className="table-dim">{o.date}</td>
-                  <td>
-                    <button className="table-action" aria-label="Amallar">
-                      <MoreHorizontal size={18} />
-                    </button>
+                    <select value={o.status} onChange={(e) => change(o.id, e.target.value)} className="table-select">
+                      {STATUS.map((s) => <option key={s.v} value={s.v}>{s.label}</option>)}
+                    </select>
                   </td>
                 </tr>
               ))}
-              {rows.length === 0 && (
-                <tr>
-                  <td colSpan={8} className="table-empty">
-                    Hech qanday buyurtma topilmadi.
-                  </td>
-                </tr>
-              )}
+              {!loading && rows.length === 0 && <tr><td colSpan={6} className="table-empty">Hozircha buyurtma yo'q.</td></tr>}
+              {loading && <tr><td colSpan={6} className="table-empty">Yuklanmoqda...</td></tr>}
             </tbody>
           </table>
         </div>
-
-        <div className="table-foot">
-          <span>{rows.length} ta buyurtma ko'rsatildi</span>
-          <span className="table-strong">Jami: ${total.toLocaleString()}</span>
-        </div>
+        <div className="table-foot"><span>{rows.length} ta buyurtma</span><span className="table-strong">Jami: ${total.toLocaleString()}</span></div>
       </div>
     </div>
   );

@@ -1,34 +1,28 @@
 import { NavLink } from "react-router-dom";
 import {
-  LayoutDashboard,
-  ShoppingCart,
-  Package,
-  Users,
-  Settings,
-  LifeBuoy,
-  LogOut,
+  LayoutDashboard, ShoppingCart, Package, Users,
+  Wrench, Video, Star, LogOut,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext.jsx";
 import "./Sidebar.css";
 
 const NAV = [
   { to: "/", label: "Boshqaruv paneli", icon: LayoutDashboard, end: true },
+  { to: "/bookings", label: "Navbatlar", icon: Wrench },
   { to: "/orders", label: "Buyurtmalar", icon: ShoppingCart },
+  { to: "/videos", label: "Videolar", icon: Video },
+  { to: "/reviews", label: "Fikrlar", icon: Star },
   { to: "/products", label: "Mahsulotlar", icon: Package },
   { to: "/customers", label: "Mijozlar", icon: Users },
 ];
 
-const SECONDARY = [
-  { to: "/", label: "Sozlamalar", icon: Settings },
-  { to: "/", label: "Yordam markazi", icon: LifeBuoy },
-];
-
 export default function Sidebar({ collapsed, mobileOpen, onCloseMobile }) {
+  const { profile, logout } = useAuth();
+  const name = profile?.name || profile?.displayName || "Admin";
+  const initials = name.slice(0, 2).toUpperCase();
+
   return (
-    <aside
-      className={`sidebar ${collapsed ? "sidebar--collapsed" : ""} ${
-        mobileOpen ? "sidebar--mobile-open" : ""
-      }`}
-    >
+    <aside className={`sidebar ${collapsed ? "sidebar--collapsed" : ""} ${mobileOpen ? "sidebar--mobile-open" : ""}`}>
       <div className="sidebar__brand">
         <span className="sidebar__logo">
           <span className="sidebar__logo-mark">APEX</span>
@@ -45,36 +39,22 @@ export default function Sidebar({ collapsed, mobileOpen, onCloseMobile }) {
             to={item.to}
             end={item.end}
             onClick={onCloseMobile}
-            className={({ isActive }) =>
-              `sidebar__link ${isActive ? "sidebar__link--active" : ""}`
-            }
+            className={({ isActive }) => `sidebar__link ${isActive ? "sidebar__link--active" : ""}`}
           >
             <item.icon size={20} />
             <span>{item.label}</span>
           </NavLink>
         ))}
-
-        <div className="sidebar__group-label">Tizim</div>
-        {SECONDARY.map((item) => (
-          <button
-            key={item.label}
-            className="sidebar__link"
-            onClick={onCloseMobile}
-          >
-            <item.icon size={20} />
-            <span>{item.label}</span>
-          </button>
-        ))}
       </nav>
 
       <div className="sidebar__footer">
         <div className="sidebar__user">
-          <div className="sidebar__avatar">AS</div>
+          <div className="sidebar__avatar">{initials}</div>
           <div className="sidebar__user-info">
-            <span className="sidebar__user-name">Asomiddin</span>
+            <span className="sidebar__user-name">{name}</span>
             <span className="sidebar__user-role">Administrator</span>
           </div>
-          <button className="sidebar__logout" aria-label="Chiqish">
+          <button className="sidebar__logout" aria-label="Chiqish" onClick={logout}>
             <LogOut size={18} />
           </button>
         </div>
