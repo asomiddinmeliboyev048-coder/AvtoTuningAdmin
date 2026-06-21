@@ -266,8 +266,8 @@
 /* --- Mahsulot rasm + modal --- */
 .prod__thumb { width: 50px; height: 38px; border-radius: 8px; background: #1a1e26 center/cover no-repeat; background-size: cover; }
 
-.modal { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); }
-.modal__card { position: relative; width: 100%; max-width: 440px; background: var(--surface, #14171f); border: 1px solid var(--border, rgba(255,255,255,0.1)); border-radius: 20px; padding: 26px 22px; max-height: 92vh; overflow-y: auto; }
+.modal { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: flex-start; justify-content: center; padding: 24px; overflow-y: auto; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); }
+.modal__card { position: relative; width: 100%; max-width: 440px; margin: auto; background: var(--surface, #14171f); border: 1px solid var(--border, rgba(255,255,255,0.1)); border-radius: 20px; padding: 26px 22px; }
 .modal__close { position: absolute; top: 14px; right: 14px; color: var(--text-faint, #8a90a0); background: none; border: none; cursor: pointer; }
 .modal__title { font-size: 1.2rem; margin-bottom: 16px; }
 .modal__label { display: block; font-size: 0.78rem; color: var(--text-faint, #8a90a0); font-weight: 600; margin: 11px 0 5px; }
