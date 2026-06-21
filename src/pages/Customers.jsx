@@ -1,105 +1,70 @@
-import { useMemo, useState } from "react";
-import { Search, Plus, Mail, MoreHorizontal } from "lucide-react";
-import { CUSTOMERS, tierToBadge } from "../data/mock.js";
+// Mijozlar — real ro'yxatdan o'tgan foydalanuvchilar (Firestore 'users').
+import { useEffect, useMemo, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { Search, RefreshCw, ShieldCheck } from "lucide-react";
+import { db } from "../lib/firebase.js";
 import "./Table.css";
 
-const initials = (name) =>
-  name
-    .split(" ")
-    .map((w) => w[0])
-    .join("")
-    .slice(0, 2)
-    .toUpperCase();
-
 export default function Customers() {
-  const [query, setQuery] = useState("");
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [q, setQ] = useState("");
 
-  const rows = useMemo(
-    () =>
-      CUSTOMERS.filter(
-        (c) =>
-          c.name.toLowerCase().includes(query.toLowerCase()) ||
-          c.email.toLowerCase().includes(query.toLowerCase()),
-      ),
-    [query],
-  );
+  const load = async () => {
+    setLoading(true);
+    const snap = await getDocs(collection(db, "users"));
+    setRows(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, []);
+
+  const filtered = useMemo(() => {
+    const s = q.trim().toLowerCase();
+    if (!s) return rows;
+    return rows.filter((u) => (u.name || u.displayName || "").toLowerCase().includes(s) || (u.email || "").toLowerCase().includes(s));
+  }, [rows, q]);
+
+  const fmtDate = (ts) => ts?.seconds ? new Date(ts.seconds * 1000).toLocaleDateString("uz") : "—";
 
   return (
     <div className="fade-up">
       <div className="page-head">
-        <div>
-          <h1>Mijozlar</h1>
-          <p>Mijozlar bazasi va ularning faolligi.</p>
-        </div>
-        <button className="btn btn-primary">
-          <Plus size={16} /> Mijoz qo'shish
-        </button>
+        <div><h1>Mijozlar</h1><p>Ro'yxatdan o'tgan foydalanuvchilar.</p></div>
+        <button className="btn btn-ghost" onClick={load}><RefreshCw size={15} /> Yangilash</button>
       </div>
 
       <div className="card table-card">
         <div className="table-toolbar">
-          <div className="table-search">
-            <Search size={17} />
-            <input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Ism yoki email bo'yicha qidirish…"
-            />
-          </div>
+          <div className="table-search"><Search size={16} /><input placeholder="Ism yoki email bo'yicha qidirish..." value={q} onChange={(e) => setQ(e.target.value)} /></div>
         </div>
-
         <div className="table-scroll">
           <table className="table">
-            <thead>
-              <tr>
-                <th>Mijoz</th>
-                <th>Email</th>
-                <th>Buyurtmalar</th>
-                <th>Sarflagan</th>
-                <th>Daraja</th>
-                <th>Ro'yxatdan o'tgan</th>
-                <th></th>
-              </tr>
-            </thead>
+            <thead><tr><th>Mijoz</th><th>Email</th><th>Telefon</th><th>Mashina</th><th>Rol</th><th>Ro'yxatdan o'tgan</th></tr></thead>
             <tbody>
-              {rows.map((c) => (
-                <tr key={c.id}>
-                  <td>
-                    <div className="table-product">
-                      <span className="table-avatar">{initials(c.name)}</span>
-                      <span className="table-strong">{c.name}</span>
-                    </div>
-                  </td>
-                  <td className="table-dim">
-                    <span className="table-email">
-                      <Mail size={14} /> {c.email}
-                    </span>
-                  </td>
-                  <td className="table-strong">{c.orders}</td>
-                  <td className="table-strong">${c.spent.toLocaleString()}</td>
-                  <td>
-                    <span className={`badge ${tierToBadge(c.tier)}`}>
-                      {c.tier}
-                    </span>
-                  </td>
-                  <td className="table-dim">{c.joined}</td>
-                  <td>
-                    <button className="table-action" aria-label="Amallar">
-                      <MoreHorizontal size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-              {rows.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="table-empty">
-                    Mijoz topilmadi.
-                  </td>
-                </tr>
-              )}
+              {filtered.map((u) => {
+                const name = u.name || u.displayName || "Foydalanuvchi";
+                return (
+                  <tr key={u.id}>
+                    <td>
+                      <div className="cust__cell">
+                        <div className="cust__av" style={u.photoURL ? { backgroundImage: `url(${u.photoURL})` } : undefined}>{!u.photoURL && name.slice(0, 2).toUpperCase()}</div>
+                        <span className="table-strong">{name}</span>
+                      </div>
+                    </td>
+                    <td className="table-dim">{u.email}</td>
+                    <td className="table-mono">{u.phone || "—"}</td>
+                    <td className="table-dim">{u.currentCar || "—"}</td>
+                    <td>{u.role === "admin" ? <span className="badge badge--red"><ShieldCheck size={12} style={{ verticalAlign: "-2px" }} /> Admin</span> : <span className="badge badge--blue">User</span>}</td>
+                    <td className="table-dim">{fmtDate(u.createdAt)}</td>
+                  </tr>
+                );
+              })}
+              {!loading && filtered.length === 0 && <tr><td colSpan={6} className="table-empty">Hozircha ro'yxatdan o'tgan mijoz yo'q.</td></tr>}
+              {loading && <tr><td colSpan={6} className="table-empty">Yuklanmoqda...</td></tr>}
             </tbody>
           </table>
         </div>
+        <div className="table-foot"><span>{filtered.length} ta mijoz</span></div>
       </div>
     </div>
   );

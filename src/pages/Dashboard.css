@@ -151,3 +151,19 @@
     grid-column: span 1;
   }
 }
+
+
+/* --- Real KPI kartalar --- */
+.kpi-card { padding: 20px; }
+.kpi-card__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.kpi-card__label { color: var(--text-faint, #8a90a0); font-size: 0.85rem; font-weight: 500; }
+.kpi-card__ic { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; }
+.kpi-card__value { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
+
+.dashboard__alerts { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 22px; }
+.alert { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 12px; font-size: 0.86rem; font-weight: 600; border: 1px solid; }
+.alert--red { color: #ff6b6b; border-color: rgba(255, 61, 61, 0.4); background: rgba(255, 61, 61, 0.08); }
+.alert--amber { color: #ffb648; border-color: rgba(255, 138, 61, 0.4); background: rgba(255, 138, 61, 0.08); }
+.alert--blue { color: #6b9bff; border-color: rgba(61, 107, 255, 0.4); background: rgba(61, 107, 255, 0.08); }
+.activity__dot--booking { background: #ff3d3d; }
+.activity__dot--review { background: #ffcf3d; }

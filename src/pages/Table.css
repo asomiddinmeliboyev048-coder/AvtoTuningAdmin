@@ -261,3 +261,25 @@
 .rmod__stars { display: inline-flex; gap: 2px; margin-top: 3px; }
 .rmod__text { color: var(--text-faint, #8a90a0); font-size: 0.9rem; line-height: 1.5; font-style: italic; }
 .rmod__actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+
+/* --- Mahsulot rasm + modal --- */
+.prod__thumb { width: 50px; height: 38px; border-radius: 8px; background: #1a1e26 center/cover no-repeat; background-size: cover; }
+
+.modal { position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(6px); }
+.modal__card { position: relative; width: 100%; max-width: 440px; background: var(--surface, #14171f); border: 1px solid var(--border, rgba(255,255,255,0.1)); border-radius: 20px; padding: 26px 22px; max-height: 92vh; overflow-y: auto; }
+.modal__close { position: absolute; top: 14px; right: 14px; color: var(--text-faint, #8a90a0); background: none; border: none; cursor: pointer; }
+.modal__title { font-size: 1.2rem; margin-bottom: 16px; }
+.modal__label { display: block; font-size: 0.78rem; color: var(--text-faint, #8a90a0); font-weight: 600; margin: 11px 0 5px; }
+.modal__input { width: 100%; background: var(--bg, #0b0d12); border: 1px solid var(--border, rgba(255,255,255,0.1)); border-radius: 10px; color: var(--text, #fff); padding: 12px 13px; font-family: inherit; font-size: 0.92rem; outline: none; }
+.modal__input:focus { border-color: #ff3d3d; }
+.modal__row { display: flex; gap: 12px; }
+.modal__preview { width: 100%; max-height: 150px; object-fit: contain; background: var(--bg, #0b0d12); border-radius: 10px; margin-bottom: 8px; }
+.modal__drop { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px dashed var(--border, rgba(255,255,255,0.2)); border-radius: 10px; padding: 13px; color: var(--text-faint, #8a90a0); background: none; cursor: pointer; }
+.modal__err { color: #ff6b6b; font-size: 0.82rem; margin-top: 10px; }
+.modal__submit { width: 100%; margin-top: 16px; }
+
+
+/* --- Mijoz hujayrasi --- */
+.cust__cell { display: flex; align-items: center; gap: 10px; }
+.cust__av { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(120deg, #ff3d3d, #ff8a3d) center/cover; display: grid; place-items: center; color: #fff; font-weight: 700; font-size: 0.8rem; flex-shrink: 0; }
