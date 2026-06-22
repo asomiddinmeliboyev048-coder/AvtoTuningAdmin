@@ -5,6 +5,7 @@ import { collection, getDocs, addDoc, deleteDoc, doc, serverTimestamp, query, or
 import { Plus, Trash2, X, UploadCloud, RefreshCw } from "lucide-react";
 import { db } from "../lib/firebase.js";
 import { uploadFile } from "../lib/supabase.js";
+import { som } from "../lib/money.js";
 import "./Table.css";
 
 const CATEGORIES = ["Disk", "Filter", "Moy", "Aksessuar", "Lamp", "Tana", "Dvigatel", "Tormoz", "Optika", "Xodovoy"];
@@ -96,7 +97,7 @@ export default function Products() {
                   <td><div className="prod__thumb" style={{ backgroundImage: `url(${p.imageURL || p.image || ""})` }} /></td>
                   <td className="table-strong">{p.name}</td>
                   <td className="table-dim">{p.category}</td>
-                  <td className="table-strong">${Number(p.price || 0).toLocaleString()}</td>
+                  <td className="table-strong">{som(p.price)}</td>
                   <td>{p.stock ?? 0}</td>
                   <td><button className="btn btn-ghost vmod__btn vmod__btn--del" onClick={() => remove(p.id)}><Trash2 size={14} /></button></td>
                 </tr>
@@ -125,8 +126,8 @@ export default function Products() {
 
             <div className="modal__row">
               <div style={{ flex: 1 }}>
-                <label className="modal__label">Narx ($) *</label>
-                <input className="modal__input" type="number" value={form.price} onChange={(e) => setForm((s) => ({ ...s, price: e.target.value }))} />
+                <label className="modal__label">Narx (so'm) *</label>
+                <input className="modal__input" type="number" value={form.price} onChange={(e) => setForm((s) => ({ ...s, price: e.target.value }))} placeholder="masalan: 95000000" />
               </div>
               <div style={{ flex: 1 }}>
                 <label className="modal__label">Stok</label>

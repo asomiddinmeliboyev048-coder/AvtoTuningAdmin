@@ -7,6 +7,7 @@ import {
 import { Users, ShoppingCart, DollarSign, Wrench, Video, Star } from "lucide-react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../lib/firebase.js";
+import { som } from "../lib/money.js";
 import "./Dashboard.css";
 
 const MONTHS = ["Yan", "Fev", "Mar", "Apr", "May", "Iyn", "Iyl", "Avg", "Sen", "Okt", "Noy", "Dek"];
@@ -61,7 +62,7 @@ export default function Dashboard() {
 
       // faoliyat
       const activity = [
-        ...orders.map((o) => ({ t: o.createdAt, text: `Buyurtma: ${o.name || "mijoz"} · $${(o.total || 0).toLocaleString()}`, type: "order" })),
+        ...orders.map((o) => ({ t: o.createdAt, text: `Buyurtma: ${o.name || "mijoz"} · ${som(o.total)}`, type: "order" })),
         ...bookings.map((b) => ({ t: b.createdAt, text: `Navbat: ${b.name || ""} · ${b.service || ""}`, type: "booking" })),
         ...reviews.map((r) => ({ t: r.createdAt, text: `Fikr: ${r.name || ""} (${r.rating}★)`, type: "review" })),
       ].filter((a) => a.t?.seconds).sort((a, b) => b.t.seconds - a.t.seconds).slice(0, 7);
@@ -81,7 +82,7 @@ export default function Dashboard() {
   const kpis = data ? [
     { label: "Foydalanuvchilar", value: data.users, icon: Users, color: "#3d6bff" },
     { label: "Buyurtmalar", value: data.orders, icon: ShoppingCart, color: "#ff8a3d" },
-    { label: "Umumiy daromad", value: "$" + data.revenue.toLocaleString(), icon: DollarSign, color: "#22c58b" },
+    { label: "Umumiy daromad", value: som(data.revenue), icon: DollarSign, color: "#22c58b" },
     { label: "Navbat so'rovlari", value: data.bookings, icon: Wrench, color: "#ff3d3d" },
   ] : [];
 

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, updateDoc, doc, query, orderBy } from "firebase/firestore";
 import { RefreshCw } from "lucide-react";
 import { db } from "../lib/firebase.js";
+import { som } from "../lib/money.js";
 import "./Table.css";
 
 const STATUS = [
@@ -57,7 +58,7 @@ export default function Orders() {
                   <td className="table-strong">{o.name || "—"}</td>
                   <td className="table-mono">{o.phone || "—"}</td>
                   <td className="table-dim">{(o.items || []).map((i) => `${i.name}×${i.qty}`).join(", ")}</td>
-                  <td className="table-strong">${(o.total || 0).toLocaleString()}</td>
+                  <td className="table-strong">{som(o.total)}</td>
                   <td><span className={`badge ${badge(o.status)}`}>{label(o.status)}</span></td>
                   <td>
                     <select value={o.status} onChange={(e) => change(o.id, e.target.value)} className="table-select">
@@ -71,7 +72,7 @@ export default function Orders() {
             </tbody>
           </table>
         </div>
-        <div className="table-foot"><span>{rows.length} ta buyurtma</span><span className="table-strong">Jami: ${total.toLocaleString()}</span></div>
+        <div className="table-foot"><span>{rows.length} ta buyurtma</span><span className="table-strong">Jami: {som(total)}</span></div>
       </div>
     </div>
   );
